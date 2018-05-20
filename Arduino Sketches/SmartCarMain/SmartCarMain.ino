@@ -11,8 +11,8 @@ GP2D120 backIR;
 Gyroscope gyro(-5);
 
 
-const int fSpeed = 35; //70% of the full speed forward
-const int bSpeed = -30; //70% of the full speed backward
+const int fSpeed = 40; //70% of the full speed forward
+const int bSpeed = -35; //70% of the full speed backward
 const int lDegrees = -75; //degrees to turn left
 const int rDegrees = 75; //degrees to turn right
 
@@ -40,10 +40,10 @@ int frontDistanceInCm;
 int sideDistanceInCm;
 int irDistanceInCm;
 
-int maxBackDistance = 12;
+int maxBackDistance = 13;
 int maxFrontDistance = 20;
 int maxSideDistance = 10;
-int maxIrbackDistance = 8;
+int maxIrbackDistance = 7;
 
 int pos = 0; // variable to store the servo position
 int const offset = -5;
@@ -108,23 +108,23 @@ void handleInput() {
     }
   }
 
-  if(Serial.available()){
-    char input  = Serial.read();
-    switch (input) {
-
-      case 1:
-      car.setSpeed(0);
-      break;
-
-      case 2:
-      car.setSpeed(fSpeed);
-      break;
-
-      default:
-      car.setSpeed(0);
-
-    }
-  }
+//  if(Serial.available()){
+//    int input  = Serial.read();
+//    switch (input) {
+//
+//      case 1:
+//      car.setSpeed(0);
+//      break;
+//
+//      case 2:
+//      car.setSpeed(fSpeed);
+//      break;
+//
+//      default:
+//      car.setSpeed(0);
+//
+//    }
+//  }
 }
 
 /* method to find a sufficiently large spot
@@ -209,7 +209,7 @@ void rotateOnSpot(int targetDegrees) {
      return;
   }
   if (targetDegrees > 0) {
-    car.setMotorSpeed(fSpeed, -fSpeed); // or 0 I am not sure 
+    car.setMotorSpeed(fSpeed, 0); // or 0 I am not sure 
   } else {
     car.setMotorSpeed(-fSpeed, fSpeed);
   }
@@ -243,7 +243,7 @@ void middlePark(){
   int distanceToGo =  frontDistance - backDistance ;
   Serial3.println("the To GO distance is");
   Serial3.println(distanceToGo/2);
-  car.go((distanceToGo/2));
+  car.go((distanceToGo/4));
   delay(1500);
 }
 
