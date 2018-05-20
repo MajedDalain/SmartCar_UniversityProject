@@ -51,7 +51,7 @@ int const offset = -5;
 
 void setup() {
   Serial.begin(9600);
-  Serial3.begin(9600);
+  Serial2.begin(9600);
   car.begin(); //initialize the car using the encoders and the gyro
   gyro.attach();
   delay(1500);
@@ -77,8 +77,16 @@ handles input from both the Serial or the usb cable between Pi and Arduino, and 
 input from the blutooth modeule as Serial3
 */
 void handleInput() {
-  if (Serial3.available()) {
-    char input = Serial3.read(); //read everything that has been received so far and log down the last entry
+    char input; //read everything that has been received so far and log down the last entry
+
+    while(Serial.available() || Serial2.available()){
+      if(Serial.available()){
+        input = Serial.read();
+      }
+      if(Serial2.available()){
+        input = Serial2.read();
+      }
+      
     switch (input) {
       case 'A': //rotate counter-clockwise going forward
         findSpot();
@@ -101,30 +109,23 @@ void handleInput() {
       case 'p': //go back
       parkInSpot();
         break;
-        
+         
+      case 'l':
+      car.setSpeed(0);
+      break;
+
+      case 'f':
+      car.setSpeed(fSpeed);
+      car.setAngle(0);
+      break;
+
       default: //if you receive something that you don't know, just stop
         car.setSpeed(0);
         car.setAngle(0);
+        return;
     }
+    return;
   }
-
-//  if(Serial.available()){
-//    int input  = Serial.read();
-//    switch (input) {
-//
-//      case 1:
-//      car.setSpeed(0);
-//      break;
-//
-//      case 2:
-//      car.setSpeed(fSpeed);
-//      break;
-//
-//      default:
-//      car.setSpeed(0);
-//
-//    }
-//  }
 }
 
 /* method to find a sufficiently large spot
