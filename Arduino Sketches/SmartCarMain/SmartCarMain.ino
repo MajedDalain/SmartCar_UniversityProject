@@ -47,7 +47,7 @@ int maxIrbackDistance = 7;
 
 int pos = 0; // variable to store the servo position
 int const offset = -5;
-
+boolean isOn = false;
 
 void setup() {
   Serial.begin(9600);
@@ -79,16 +79,19 @@ input from the blutooth modeule as Serial3
 void handleInput() {
     char input; //read everything that has been received so far and log down the last entry
 
-    while(Serial.available() || Serial2.available()){
-      if(Serial.available()){
-        input = Serial.read();
-      }
-      if(Serial2.available()){
+    while(Serial.available() > 0 || Serial2.available() >0){
+      char input;
+      if(Serial2.available()> 0){
         input = Serial2.read();
+        delay(200);
+      }
+      else if(Serial.available()>0){
+        input = Serial.read();
+        delay(200);
       }
       
     switch (input) {
-      case 'A': //rotate counter-clockwise going forward
+      case 'a': //rotate counter-clockwise going forward
         findSpot();
         delay(1000);
         parkInSpot();
@@ -118,14 +121,32 @@ void handleInput() {
       car.setSpeed(fSpeed);
       car.setAngle(0);
       break;
+      
+      case '1': //green sign
+        if(!isOn){
+          car.setSpeed(fSpeed);
+          isOn = true;
+        }
+     //else do nothing, because the car is already driving
+      break;
+
+      case '0': //red sign
+        if(isOn){
+          car.setSpeed(0);
+          isOn = false;  
+        }
+      //else do nothing, because the car has already stopped
+      break;
 
       default: //if you receive something that you don't know, just stop
         car.setSpeed(0);
         car.setAngle(0);
         return;
     }
+    //delay(200);
     return;
   }
+  return; 
 }
 
 /* method to find a sufficiently large spot
