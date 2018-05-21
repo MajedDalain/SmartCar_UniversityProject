@@ -123,8 +123,9 @@ void handleInput() {
       break;
       
       case '1': //green sign
+      
         if(!isOn){
-          car.setSpeed(fSpeed);
+          car.setSpeed(fSpeed-10);
           isOn = true;
         }
      //else do nothing, because the car is already driving
